@@ -1,0 +1,39 @@
+.bg-black {
+  background-color: #000000;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.bg-grey {
+  background-color: #373737;
+}
+
+.bg-blue {
+  background-color: #0095f6;
+}
+
+.text-primary {
+  color: #e5e1db;
+}
+
+.text-secondary {
+  color: #373737;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.text-blue {
+  color: #0095f6;
+}
+
+.text-black {
+  color: #000000;
+}
+
+.text-red {
+  color: #ff0000;
+}

@@ -1,0 +1,22 @@
+.form {
+  margin-top: 80px;
+  height: 600px;
+  border: 1px solid grey;
+  width: 400px;
+  border-radius: 15px;
+}
+
+.form h1 {
+  font-size: 40px;
+}
+
+.form-container > input {
+  border: 1px solid #373737;
+  border-radius: 2px;
+  padding: 10px;
+  width: 300px;
+}
+
+.form-container > input::placeholder {
+  color: black;
+}
