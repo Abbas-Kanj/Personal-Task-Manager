@@ -2,184 +2,115 @@ import React, { useState } from "react";
 import "./style.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-const todotasks = [
-  {
-    id: 1,
-    description: "todo 1",
+const columnsFromBackend = {
+  todos: {
+    title: "Todos",
+    items: [
+      { id: "1", content: "todo 1" },
+      { id: "2", content: "todo 2" },
+      { id: "3", content: "todo 3" },
+    ],
   },
-  {
-    id: 2,
-    description: "todo 2",
+  inprogress: {
+    title: "In Progress",
+    items: [],
   },
-  {
-    id: 3,
-    description: "todo 3",
+  done: {
+    title: "Done",
+    items: [],
   },
-];
-
-const inprogresstasks = [
-  {
-    id: 1,
-    description: "inprogress 1",
-  },
-  {
-    id: 2,
-    description: "inprogress 2",
-  },
-  {
-    id: 3,
-    description: "inprogress 3",
-  },
-];
-
-const donetasks = [
-  {
-    id: 1,
-    description: "done 1",
-  },
-  {
-    id: 2,
-    description: "done 2",
-  },
-  {
-    id: 3,
-    description: "done 3",
-  },
-];
+};
 
 const Board = () => {
-  const [tasks, updateTasks] = useState(todotasks);
-  const [inprogress, updateInprogress] = useState(inprogresstasks);
-  const [done, updateDone] = useState(donetasks);
+  const [columns, setColumns] = useState(columnsFromBackend);
 
-  function handleOnDragEndTodo(result) {
-    if (!result.destination) return;
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
 
-    const items = Array.from(tasks);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const start = columns[source.droppableId];
+    const finish = columns[destination.droppableId];
 
-    updateTasks(items);
-  }
+    if (start === finish) {
+      const newItems = Array.from(start.items);
+      const [removed] = newItems.splice(source.index, 1);
+      newItems.splice(destination.index, 0, removed);
 
-  function handleOnDragEndInProgress(result) {
-    if (!result.destination) return;
+      const newColumn = {
+        ...start,
+        items: newItems,
+      };
 
-    const items = Array.from(inprogress);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+      setColumns({
+        ...columns,
+        [newColumn.title.toLowerCase()]: newColumn,
+      });
+    } else {
+      const startItems = Array.from(start.items);
+      const [removed] = startItems.splice(source.index, 1);
+      const newStart = {
+        ...start,
+        items: startItems,
+      };
 
-    updateInprogress(items);
-  }
+      const finishItems = Array.from(finish.items);
+      finishItems.splice(destination.index, 0, removed);
+      const newFinish = {
+        ...finish,
+        items: finishItems,
+      };
 
-  function handleOnDragEndDone(result) {
-    if (!result.destination) return;
+      setColumns({
+        ...columns,
+        [newStart.title.toLowerCase()]: newStart,
+        [newFinish.title.toLowerCase()]: newFinish,
+      });
+    }
+  };
 
-    const items = Array.from(done);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    updateDone(items);
-  }
   return (
-    <div className="flex column center">
-      <div className="flex column center add-tasks">
-        <h3 className="bold">Add Task</h3>
-        <input type="text" name="" id="" placeholder="...." />
-      </div>
-      <div className="flex justify-evenly p container">
-        <div className="todo">
-          <h3 className="bold medium-font">Todos</h3>
-          <DragDropContext onDragEnd={handleOnDragEndTodo}>
-            <Droppable droppableId="tasks">
-              {(provided) => (
-                <ul
-                  className="mg-top bg-blue"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {tasks.map(({ id, description }, i) => (
-                    <Draggable key={id} draggableId={String(id)} index={i}>
-                      {(provided) => (
-                        <li
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white "
-                        >
-                          {description}
-                        </li>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </DragDropContext>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="flex column center">
+        <div className="flex column center add-tasks">
+          <h3 className="bold">Add Task</h3>
+          <input type="text" name="" id="" placeholder="...." />
         </div>
-        <div className=" in-prog">
-          <h3 className="bold medium-font">In Progress</h3>
-          <DragDropContext onDragEnd={handleOnDragEndInProgress}>
-            <Droppable droppableId="tasks">
-              {(provided) => (
-                <ul
-                  className="mg-top bg-blue"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {inprogress.map(({ id, description }, i) => (
-                    <Draggable key={id} draggableId={String(id)} index={i}>
-                      {(provided) => (
-                        <li
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white "
-                        >
-                          {description}
-                        </li>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-        <div className="done">
-          <h3 className="bold medium-font">Done</h3>
-          <DragDropContext onDragEnd={handleOnDragEndDone}>
-            <Droppable droppableId="tasks">
-              {(provided) => (
-                <ul
-                  className="mg-top bg-blue"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {done.map(({ id, description }, i) => (
-                    <Draggable key={id} draggableId={String(id)} index={i}>
-                      {(provided) => (
-                        <li
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white "
-                        >
-                          {description}
-                        </li>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </DragDropContext>
+        <div className="flex container">
+          {Object.entries(columns).map(([columnId, column]) => (
+            <div className="flex p column" key={columnId}>
+              <div className={columnId}>
+                <h3 className="bold medium-font">{column.title}</h3>
+                <Droppable droppableId={columnId}>
+                  {(provided) => (
+                    <ul
+                      className="mg-top bg-blue"
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {column.items.map(({ id, content }, i) => (
+                        <Draggable key={id} draggableId={id} index={i}>
+                          {(provided) => (
+                            <li
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="bg-white"
+                            >
+                              {content}
+                            </li>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </DragDropContext>
   );
 };
 
