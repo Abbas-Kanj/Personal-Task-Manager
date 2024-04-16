@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-// import { sendRequest } from "../../../core/remote/request";
+import { sendRequest } from "../../../core/remote/request";
 import { useNavigate } from "react-router-dom";
-// import { setUser } from "../../../features/users/userSlice";
 import { useDispatch } from "react-redux";
 import "../index.css";
+import { setUser } from "../../../redux/userSlice/userReducer";
 
 const LoginForm = ({ setLogin }) => {
   const navigate = useNavigate();
