@@ -111,6 +111,10 @@
   border-radius: 10px;
 }
 
+.border-black {
+  border: 2px solid black;
+}
+
 .mg-top {
   margin-top: 20px;
 }
