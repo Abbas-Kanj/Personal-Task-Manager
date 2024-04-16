@@ -29,23 +29,22 @@ const LoginForm = ({ setLogin }) => {
 
   const handleLogin = async () => {
     if (validateForm()) {
-      let data = new FormData();
-      data.append("email", email);
-      data.append("password", password);
+      let data = {
+        email: email,
+        password: password,
+      };
       try {
-        const headers = {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        };
-        const res = await sendRequest("POST", "/api/login", data, headers);
+        const body = JSON.stringify(data);
+        const res = await sendRequest("POST", "auth/login", body);
         if ((res.status = 200)) {
-          window.localStorage.setItem("token", res.data.authorisation.token);
-          dispatch(setUser(res.data.user));
-          console.log("sign in successfull");
-          navigate("/Home");
+          window.localStorage.setItem("token", res.data.token);
+          console.log(res.data);
+          dispatch(setUser(res.data.loggedUser));
+          navigate("/Board");
         }
       } catch (error) {
         console.log(error);
-        setError(error.res.data.message);
+        setError(error.response.data.message);
       }
     }
   };
@@ -53,7 +52,7 @@ const LoginForm = ({ setLogin }) => {
   return (
     <div className="flex column align-center">
       <div className="flex column align-center justify-around bg-white form ">
-        <h1 className="text-black">Instagram</h1>
+        <h1 className="text-black">Personal Task Manager</h1>
         <form className="flex column big-gap p form-container align-center">
           <input
             type="email"

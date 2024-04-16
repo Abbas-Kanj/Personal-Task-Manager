@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./style.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { sendRequest } from "../../core/remote/request";
+import { setBoards } from "../../redux/userSlice/userReducer";
+import { useDispatch } from "react-redux";
 
 const columnsFromBackend = {
   todos: {
@@ -22,6 +25,19 @@ const columnsFromBackend = {
 };
 
 const Board = () => {
+  const dispatch = useDispatch();
+
+  const handleLogin = async () => {
+    try {
+      const res = await sendRequest("GET", "boards");
+      if ((res.status = 200)) {
+        console.log(res.data);
+        dispatch(setBoards(res.data));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [columns, setColumns] = useState(columnsFromBackend);
 
   const onDragEnd = (result) => {
@@ -66,6 +82,7 @@ const Board = () => {
         [newFinish.title.toLowerCase()]: newFinish,
       });
     }
+    console.log(columns);
   };
 
   return (
@@ -74,6 +91,7 @@ const Board = () => {
         <div className="flex column center add-tasks">
           <h3 className="bold">Add Task</h3>
           <input type="text" name="" id="" placeholder="...." />
+          <button onClick={handleLogin}>Click me</button>
         </div>
         <div className="flex container">
           {Object.entries(columns).map(([columnId, column]) => (

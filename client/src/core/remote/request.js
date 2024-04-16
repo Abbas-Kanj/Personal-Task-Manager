@@ -1,13 +1,17 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://127.0.0.1:5000/";
+const jwt = localStorage.getItem("token");
 
-export const sendRequest = async (method, route, body, headers) => {
+export const sendRequest = async (method, route, body) => {
   const response = await axios.request({
     method: method,
     url: route,
     data: body,
-    headers: headers,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
   });
 
   if (response.status === 401) {
