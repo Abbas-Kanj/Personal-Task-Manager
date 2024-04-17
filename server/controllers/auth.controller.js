@@ -11,9 +11,9 @@ const register = async (req, res) => {
     return res.status(201).json({ user: createdUser });
   } catch (error) {
     console.log(error);
-    return res.send(500).send(error);
+    return res.sendStatus(500).send(error);
   }
-}
+};
 
 const login = async (req, res) => {
   try {
@@ -25,7 +25,7 @@ const login = async (req, res) => {
     if (!isMatch) return res.status(400).send("email/password incorrect!");
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    const loggedUser = await User.findOne({ email }).select("-password -boards");
+    const loggedUser = await User.findOne({ email }).select("-password");
     return res.status(200).json({ loggedUser, token });
   } catch (error) {
     console.log(error);

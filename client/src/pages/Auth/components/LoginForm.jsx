@@ -3,7 +3,7 @@ import { sendRequest } from "../../../core/remote/request";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import "../index.css";
-import { setUser } from "../../../redux/userSlice/userReducer";
+import { setBoards, setUser } from "../../../redux/userSlice/userReducer";
 
 const LoginForm = ({ setLogin }) => {
   const navigate = useNavigate();
@@ -40,6 +40,7 @@ const LoginForm = ({ setLogin }) => {
           window.localStorage.setItem("token", res.data.token);
           console.log(res.data);
           dispatch(setUser(res.data.loggedUser));
+          dispatch(setBoards(res.data.loggedUser.boards));
           navigate("/Board");
         }
       } catch (error) {
