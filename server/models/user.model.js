@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Board = require("./board.model")
+const Board = require("./board.model");
 
-const defaultBoard = [{ title: "insta Project" }];
-
+const defaultBoard = [{ title: "Jira Project" }];
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -36,6 +35,5 @@ userSchema.methods.comparePassword = function (candidatePassword) {
 };
 
 const User = mongoose.model("User", userSchema);
-
 
 module.exports = User;
